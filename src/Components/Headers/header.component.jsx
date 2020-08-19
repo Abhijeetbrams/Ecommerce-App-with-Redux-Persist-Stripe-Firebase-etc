@@ -7,7 +7,15 @@ import './header.style.scss';
 
 import {auth} from '../FireBase/firebase.util';
 
-const Header = (props) => (
+export default function Header(props){
+
+    function handleClick()
+    {
+        auth.signOut();
+        
+    }
+
+    return(
   <div className='header'>
     <Link className='logo-container' to='/'>
       <Logo className='logo' />
@@ -20,7 +28,7 @@ const Header = (props) => (
         CONTACT
       </Link>
      {props.user ? (
-        <div className='option' onClick={() => auth.signOut()}>
+        <div className='option' onClick={handleClick}>
          SIGN OUT 
         </div>
       ) : (
@@ -29,7 +37,6 @@ const Header = (props) => (
         </Link>
       )}
     </div>
-  </div>
-);
+  </div>);
+}
 
-export default Header;
