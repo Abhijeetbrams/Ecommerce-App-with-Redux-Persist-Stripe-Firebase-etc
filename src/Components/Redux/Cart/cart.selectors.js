@@ -1,7 +1,7 @@
 import {createSelector} from 'reselect';
 
 
-const selectCart =state => state.toggle; // 
+const selectCart =state => state.toggle; 
 
 export const selectCartItems = createSelector(
 [selectCart],
@@ -23,3 +23,5 @@ export const selectCartAmount=createSelector(
     [selectCartItems],
     cart=>cart.reduce((accummualtedValue,cart1)=>accummualtedValue+cart1.quantity*cart1.price,0)
 );
+
+

@@ -17,6 +17,7 @@ import { createStructuredSelector } from 'reselect';
 import {selectCurrentUser} from '../src/Components/Redux/Users/user.selectors';
 import Checkout from './Components/Checkout/checkout.component';
 
+
 function App(props) {
 
   useEffect(
