@@ -4,6 +4,7 @@ import userReducer from './Users/user.reducer';
 import Toggle from './Cart/cart.reducer';
 
 import { persistReducer } from 'redux-persist';
+import ShopReducer from './Shop/shop.reducer';
 
 const persistConfig={
   key:"root", // this means at what point inside of our reducer object do we want to start storing everything and
@@ -16,7 +17,8 @@ const persistConfig={
 
 const  rootReducer= combineReducers({ //Here uses combine reducers to create actual root reducer object.
   user: userReducer,
-  toggle:Toggle
+  toggle:Toggle,
+  shop:ShopReducer
 });
 
 export default persistReducer(persistConfig,rootReducer);
