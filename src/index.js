@@ -23,7 +23,9 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-// We're wrapping our app into persistGate in order to gave access of persistance flow to the app// means what it will do it will allow the persist gate to actually receive the store and also fireoff action that will Re-Hydrate the state // whenever our application refreshes 
+// We're wrapping our app into persistGate in order to gave access of persistance flow to the app
+// means what it will do it will allow the persist gate to actually receive the store and also fireoff action that will Re-Hydrate the state 
+// whenever our application refreshes 
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
