@@ -1,4 +1,4 @@
-import SHOP_DATA from '../../../Pages/Shop/shop.data';
+//import SHOP_DATA from '../../../Pages/Shop/shop.data';
 
 const INITIAL_STATE=({
     shopData:[
@@ -35,12 +35,23 @@ const INITIAL_STATE=({
           linkUrl: 'shop/mens'
         }
       ],
-      shopItemData:SHOP_DATA
+      shopItemData:null,
+      isLoading:true
 });
 
 const ShopReducer =(state=INITIAL_STATE,action)=>
 {
     switch (action.type) {
+      case "FIREBASE_COLLECTION":
+      return {
+        ...state,
+        shopItemData:action.payload
+      }
+      case "SERVER_LOADING":
+        return{
+          ...state,
+          isLoading:false
+        }
         default:
           return state;
       }

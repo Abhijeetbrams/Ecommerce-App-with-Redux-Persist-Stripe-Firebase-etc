@@ -55,6 +55,67 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
+export const addCollectionAndItems = async(collectionKey,objectsToAdd)=> 
+{
+    const collectionRef =firestore.collection(collectionKey);
+    console.log(collectionRef); // Here firebase will give us back a ref object but it will not create a Collection in
+    // the database and when we are starting adding a doccument then it will create a Collection and document inside a firestore.
+    
+    // Now the issue is suppose we have large data that we are sending to the server and Now the thing about fire store 
+    // is that we can only make one documentReference.set(obj) call at a time and suppose If our internet connection say 
+    // stops halfway through our code only we'll have saved half those documents because the other half would not have made it to the server.
+    // Now this is bad because our code becomes unpredictable.
+    // We want to know that if we hit our function and all of our requests send all of them should set.
+    // If any of them fail we want the whole thing to fail because then we can anticipate that right.
+    // So in order to do that we have to do what's called a batch right and a batch right is essentially just
+    // a way to batch or group all our calls together into one big request.
+    // And fire store gives us what's called a batch object and with this batch object
+    // we just add all of our for example sets(all the set call) into it and then we fired off whenever 
+    // we're done adding all the calls we want to it.
+    const batch =firestore.batch();
+    objectsToAdd.forEach(obj=>{  // The only difference is that for each does not return us a new array the same way that .map() does
+      const newDocRef= collectionRef.doc(); // it's telling firebase give me a new document reference in this collection and
+    // because we're telling firestore that in this collection I want you to make me new document reference objects but create your own key.
+    // and if we pass title value now if we save we will see that the I.D. inside of our document is our title.
+    batch.set(newDocRef,obj)// Rather than doing the newDocRef.set() means rather than setting the value of each Document or calling 
+    // docReference.set() everytime we can set it via batch it will set all the data when the whole data in a particular batch 
+    // is made it to server 
+    // what batch.set()// 2 argument - 1. Document Reference and 2. Obj- Object that we want to set in the particular document
+
+    });
+
+   // And at last we fire off our batch call via commit() and what it return is a promise and when commit succeed 
+   // it will return a void value meaning a null value and it's good because we can use .then() and 
+   // we have to make this as async function.
+   return await batch.commit();
+
+
+}
+export const CollectionData=(snapShot)=>
+{
+
+  const docRef=snapShot.docs.map(doc=>
+    {
+      //console.log(doc.data());
+      const {title,items}=doc.data();
+      return{
+        id:doc.id,
+        routeName:encodeURI(title.toLowerCase()),
+        title,
+        items
+      };
+       
+   
+    });
+    //docRef.map(doc=>{console.log(doc)})
+    return docRef.reduce((accumulatedValue,doc)=>{
+      accumulatedValue[doc.title.toLowerCase()]=doc;
+      return accumulatedValue;
+    },{});
+    //console.log(docRef);
+       
+}
+
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 

@@ -1,16 +1,54 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route } from 'react-router-dom';
-
 import CollectionsOverview from '../../Components/Collection Overview/collections-overview.component';
 import CollectionPage from '../Collection/collection.component';
+import {firestore} from '../../Components/FireBase/firebase.util';
+import {CollectionData} from '../../Components/FireBase/firebase.util';
+import {connect} from 'react-redux';
+import {gettingCollection, loadingCheck} from '../../Components/Redux/Shop/shop.action';
+import WithSpinner from '../../Components/WithSpinner/with-spinner.component';
+//import {useState} from 'react';
+import {createStructuredSelector} from 'reselect';
+import {changeLoading} from '../../Components/Redux/Shop/shop.selector';
 
-const ShopComponent = ({ match }) => {
- console.log(match.path);
+
+function ShopComponent(props) {
+  //const[isLoading,setLoading]=useState(true);
+
+  const CollectionOveriewWithSpinner= WithSpinner(CollectionsOverview);
+  const CollectionPageWithSpinner=WithSpinner(CollectionPage);
+ //console.log(match.path);
+ useEffect(()=>{
+
+const collectionRef=firestore.collection('collections');
+
+collectionRef.onSnapshot(async snapShot=>{
+  //console.log(snapShot);
+  const collections= CollectionData(snapShot);
+  //console.log(CollectionData(snapShot));
+  props.gettingCollection(collections);
+  props.loadingCheck(false);
+
+})
+  
+},[]);
+
+
   return (
   <div className='shop-page'>
-    <Route exact path={`${match.path}`} component={CollectionsOverview} />
-    <Route path="/shop/:collectionId" component={CollectionPage} />
+    <Route exact path={`${props.match.path}`} render={(props)=>(<CollectionOveriewWithSpinner isLoading={props.isLoading}{...props}/>)}/>
+    <Route path="/shop/:collectionId" render={(props)=>(<CollectionPageWithSpinner  isLoading={props.isLoading}{...props}/>)}/>
   </div>);
-};
+}
 //${match.path}/:collectionId
-export default ShopComponent;
+const mapStateToProps=createStructuredSelector(
+  {
+    isLoading:changeLoading
+  }
+)
+const mapDispatchToProps=dispatch=>
+({
+  gettingCollection:collections=>dispatch(gettingCollection(collections)),
+  loadingCheck:isLoading=>dispatch(loadingCheck(isLoading))
+});
+export default connect(null,mapDispatchToProps)(ShopComponent);

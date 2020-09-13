@@ -9,6 +9,7 @@ import {useEffect} from 'react';
 import {useState} from 'react';
 import {auth} from './Components/FireBase/firebase.util';
 import {createUserProfileDocument} from './Components/FireBase/firebase.util';
+import {addCollectionAndItems} from './Components/FireBase/firebase.util';
 import {connect} from 'react-redux';
 import SignInAndSignUpPage from './Pages/Sign-In and Sign-Up/sign-in-and-sign-up.component';
 import {setCurrentUser} from './Components/Redux/Users/user.action';
@@ -18,9 +19,14 @@ import {selectCurrentUser} from '../src/Components/Redux/Users/user.selectors';
 import Checkout from './Components/Checkout/checkout.component';
 import CollectionCategory from './Components/CollectionCategory/collectionCategory.component';
 import CollectionPage from './Pages/Collection/collection.component';
+import {selectCollectionsForPreview} from './Components/Redux/Shop/shop.selector';
+import WithSpinner from './Components/WithSpinner/with-spinner.component';
+import {changeLoading} from './Components/Redux/Shop/shop.selector';
+import {loadingCheck} from './Components/Redux/Shop/shop.action';
 
 function App(props) {
 
+  const CollectionPageWithSpinner=WithSpinner(CollectionPage);
   useEffect(
     ()=>{
         const abortController = new AbortController();
@@ -51,7 +57,14 @@ function App(props) {
         });
       }
       props.setCurrentUser(userAuth);
-    })
+     // addCollectionAndItems('collections', props.collectionsArray.map(({title,items})=>({title,items})))
+      // here we are destructuring because we need title and items to be saved in the firebase and rest of like url
+      // and other field would be generated from the Firebase.
+      // we have removed routeName property because as if we access the same data into mobile app so in the case we
+      // don't need this routename property in mobile it is specific to web.
+    }
+    );
+
     return function cleanup()
     {
         abortController.abort();
@@ -71,7 +84,7 @@ function App(props) {
       <Route exact path="/shop" component={ShopComponent} />
       <Route path="/signin" render={()=>props.currentUser?(<Redirect to="/" />):( <SignInAndSignUpPage/>)}/>
       <Route exact path="/checkout" component={Checkout}/>
-      <Route path="/shop/:collectionId" component={CollectionPage} />
+      <Route path="/shop/:collectionId" render={(props)=>(<CollectionPageWithSpinner  isLoading={props.isLoading}{...props}/>)}/>
       </Switch>
     </div>
   );
@@ -79,17 +92,22 @@ function App(props) {
 
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
+  collectionsArray:selectCollectionsForPreview,
+  isLoading:changeLoading
 });
 
 
 const mapDispatchToProps = dispatch => {
    console.log("MSTP App.js");
   return{
-  setCurrentUser: user => dispatch(setCurrentUser(user)) // here what dispatch is it's a way for redux to know that whatever you're
+  setCurrentUser: user => dispatch(setCurrentUser(user)), // here what dispatch is it's a way for redux to know that whatever you're
   //passing me whatever object you're passing me is going to be an action object that I'm going to pass to every reducer and here
   // our user action that gets the "user" but returns an action object and here we gonna call our action which is setCurrentUser() and 
   //passing user and that "user" can be used as payload in the action. 
+ 
+  
+  loadingCheck:isLoading=>dispatch(loadingCheck(isLoading))
   }
 };
 
