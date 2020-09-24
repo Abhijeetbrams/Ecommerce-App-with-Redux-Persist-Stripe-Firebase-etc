@@ -4,6 +4,7 @@ import CollectionsOverview from '../../Components/Collection Overview/collection
 import CollectionPage from '../Collection/collection.component';
 import WithSpinner from '../../Components/WithSpinner/with-spinner.component';
 //import {useState} from 'react';
+import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
 import {changeLoading} from '../../Components/Redux/Shop/shop.selector';
 import {fetchAsyncCollections} from '../../Components/Redux/Shop/shop.action';
