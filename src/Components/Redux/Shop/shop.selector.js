@@ -33,5 +33,5 @@ export const selectCollectionsForPreview = createSelector(
 
   export const changeLoading=createSelector(
     [Shop_data],
-    loading=>loading.isLoading
+    loading=>loading.isFetching
   );

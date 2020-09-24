@@ -36,17 +36,36 @@ const INITIAL_STATE=({
         }
       ],
       shopItemData:null,
-      isLoading:true
+      isLoading:true,
+      isFetching:false,
+      errorMessage:null
 });
 
 const ShopReducer =(state=INITIAL_STATE,action)=>
 {
     switch (action.type) {
-      case "FIREBASE_COLLECTION":
+      case "FETCH_COLLECTION_ASYNC_START":
+       return{
+         ...state,
+         isFetching:true
+       }
+       case "FETCH_ASYNC_COLLECTION_SUCCESS":
+         return{
+           ...state,
+           isFetching:false,
+           shopItemData:action.payload
+         }
+       case "FETCH_ASYNC_COLLECTION_FAILURE":
+         return{
+           ...state,
+           isFetching:false,
+           errorMessage:action.payload
+         }  
+     /* case "FIREBASE_COLLECTION":
       return {
         ...state,
         shopItemData:action.payload
-      }
+      }*/
       case "SERVER_LOADING":
         return{
           ...state,

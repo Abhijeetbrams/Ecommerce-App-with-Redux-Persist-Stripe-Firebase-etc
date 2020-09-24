@@ -2,15 +2,11 @@ import React, { useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import CollectionsOverview from '../../Components/Collection Overview/collections-overview.component';
 import CollectionPage from '../Collection/collection.component';
-import {firestore} from '../../Components/FireBase/firebase.util';
-import {CollectionData} from '../../Components/FireBase/firebase.util';
-import {connect} from 'react-redux';
-import {gettingCollection, loadingCheck} from '../../Components/Redux/Shop/shop.action';
 import WithSpinner from '../../Components/WithSpinner/with-spinner.component';
 //import {useState} from 'react';
 import {createStructuredSelector} from 'reselect';
 import {changeLoading} from '../../Components/Redux/Shop/shop.selector';
-
+import {fetchAsyncCollections} from '../../Components/Redux/Shop/shop.action';
 
 function ShopComponent(props) {
   //const[isLoading,setLoading]=useState(true);
@@ -20,16 +16,9 @@ function ShopComponent(props) {
  //console.log(match.path);
  useEffect(()=>{
 
-const collectionRef=firestore.collection('collections');
+  props.fetchAsyncCollections();
+  //props.loadingCheck(false);
 
-collectionRef.onSnapshot(async snapShot=>{
-  //console.log(snapShot);
-  const collections= CollectionData(snapShot);
-  //console.log(CollectionData(snapShot));
-  props.gettingCollection(collections);
-  props.loadingCheck(false);
-
-})
   
 },[]);
 
@@ -48,7 +37,7 @@ const mapStateToProps=createStructuredSelector(
 )
 const mapDispatchToProps=dispatch=>
 ({
-  gettingCollection:collections=>dispatch(gettingCollection(collections)),
-  loadingCheck:isLoading=>dispatch(loadingCheck(isLoading))
+  fetchAsyncCollections:()=>dispatch(fetchAsyncCollections()),
+  //loadingCheck:isLoading=>dispatch(loadingCheck(isLoading))
 });
 export default connect(null,mapDispatchToProps)(ShopComponent);

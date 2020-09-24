@@ -1,11 +1,11 @@
 import { createStore, applyMiddleware } from 'redux';
 import {persistStore} from 'redux-persist';
 import logger from 'redux-logger'; // This middleware catches the action and console logs out for us and then moves to root reducer.
-
+import thunk  from 'redux-thunk';
 
 import rootReducer from './root.reducer';
 
-const middlewares = [logger]; // Middleware to our store so that whenever  action gets fired dispatched we can catch them or display them 
+const middlewares = [thunk ]; // Middleware to our store so that whenever  action gets fired dispatched we can catch them or display them 
 //Middleware is that recieve action in and then do something with them and then pass them out to the root reducer.
 // Middleware is an array that contains middlewares
 
